@@ -30,13 +30,18 @@ contract NavCoin {
         //check if the contract has requested tokens in the first place
         //and make sure that there is no integer overflow issue with the recepient
 
-        if( _to == 0x0 || tokenBalance[msg.sender] < _value || tokenBalance[_to] + _value < tokenBalance[_to] ) throw;
+        if( _to == 0x0 || tokenBalance[msg.sender] < _value || tokenBalance[_to] + _value < tokenBalance[_to] ) {
+            success = false
+            throw;
+        } else {
+            //deduct from origin and increment in destination
+            tokenBalance[msg.sender] -= _value;
+            tokenBalance[_to] += _value;
 
-        //deduct from origin and increment in destination
-        tokenBalance[msg.sender] -= _value;
-        tokenBalance[_to] += _value;
+            success = true;
 
-        // fire transfer event to notify all nodes that a transfer event took place
-        Transfer( msg.sender, _to, _value);
+            // fire transfer event to notify all nodes that a transfer event took place
+            Transfer( msg.sender, _to, _value);
+        }
     }
 }
