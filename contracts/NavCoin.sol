@@ -31,7 +31,7 @@ contract NavCoin {
         //and make sure that there is no integer overflow issue with the recepient
 
         if( _to == 0x0 || tokenBalance[msg.sender] < _value || tokenBalance[_to] + _value < tokenBalance[_to] ) {
-            success = false
+            success = false;
             throw;
         } else {
             //deduct from origin and increment in destination
