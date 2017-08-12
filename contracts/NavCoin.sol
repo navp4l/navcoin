@@ -1,34 +1,38 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.15;
 
-import "./ConvertLib.sol";
+contract NavCoin {
+    
+    // add mapping for address to balance - should be public so that anyone can query balance
+    // associated with an address
+    mapping(address => uint256) public tokenBalance;
 
-// This is just a simple example of a coin-like contract.
-// It is not standards compatible and cannot be expected to talk to other
-// coin/token contracts. If you want to create a standards-compliant
-// token, see: https://github.com/ConsenSys/Tokens. Cheers!
+    // constructor method that assigns initial supply value when contract is initialized
+    function NavCoin(unit256 initialSupply) {
+        tokenBalance[msg.sender] = initialSupply;
+    }
 
-contract MetaCoin {
-	mapping (address => uint) balances;
+    // method to transfer tokens out of the contract to a recepient
+    function transfer(address _to, uint256 _value) returns (bool success) {
+        //check if the destination is the burn address
+        //check if the contract has requested tokens in the first place
+        //and make sure that there is no integer overflow issue with the recepient
 
-	event Transfer(address indexed _from, address indexed _to, uint256 _value);
+        if( _to == 0x0 ) throw;
+        if( tokenBalance[msg.sender] < _value )  throw;
+        if( tokenBalance[_to] + _value < tokenBalance[_to] ) throw;
 
-	function MetaCoin() {
-		balances[tx.origin] = 10000;
-	}
+        //deduct from origin and increment in destination
+        tokenBalance[msg.sender] -= _value;
+        tokenBalance[_to] += _value;
 
-	function sendCoin(address receiver, uint amount) returns(bool sufficient) {
-		if (balances[msg.sender] < amount) return false;
-		balances[msg.sender] -= amount;
-		balances[receiver] += amount;
-		Transfer(msg.sender, receiver, amount);
-		return true;
-	}
+        // fire transfer event
+        Transfer( msg.sender, _to, _value);
+    }
 
-	function getBalanceInEth(address addr) returns(uint){
-		return ConvertLib.convert(getBalance(addr),2);
-	}
 
-	function getBalance(address addr) returns(uint) {
-		return balances[addr];
-	}
+
+
+
+
+
 }
