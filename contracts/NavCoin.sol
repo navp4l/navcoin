@@ -1,27 +1,27 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.13;
 
 contract NavCoin {
 
     // contract level members
-    string tokenName;
-    string tokenSymbol;
-    unit8 decimalUnitsForDisplay;
+    string public name;
+    string public symbol;
+    uint8 public decimalUnits;
     
     // add mapping for address to balance - should be public so that anyone can query balance
     // associated with an address
     mapping(address => uint256) public tokenBalance;
 
-    // contract level events
-    event Transfer( address indexed from, address indexed to, unit256 value );
+    // contract level events to indicate funds transfer
+    event Transfer( address indexed from, address indexed to, uint256 value );
 
     // constructor method that assigns the following values when contract is initialized
     //initial supply value 
     //token name
-    function NavCoin(string tokenName, string tokenSymbol, unit256 initialSupply, unit8 decimalUnitsForDisplay) {
-        this.tokenName = tokenName
-        this.tokenSymbol = tokenSymbol;
+    function NavCoin(string tokenName, string tokenSymbol, uint256 initialSupply, uint8 decimalUnitsForDisplay) {
+        name = tokenName;
+        symbol = tokenSymbol;
         tokenBalance[msg.sender] = initialSupply;
-        this.decimalUnitsForDisplay = decimalUnitsForDisplay;
+        decimalUnits = decimalUnitsForDisplay;
     }
 
     // method to transfer tokens out of the contract to a recepient
@@ -39,11 +39,4 @@ contract NavCoin {
         // fire transfer event to notify all nodes that a transfer event took place
         Transfer( msg.sender, _to, _value);
     }
-
-
-
-
-
-
-
 }
