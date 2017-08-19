@@ -1,3 +1,5 @@
+pragma solidity ^0.4.13;
+
 /* This contract is a Parent contract which encapsulates
    functionality related to ownership
 */   

@@ -1,3 +1,5 @@
+pragma solidity ^0.4.13;
+
 // ERC Token Standard #20 Interface - https://github.com/ethereum/EIPs/issues/20
 contract ERC20TokenInterface {
     uint public totalSupply;
