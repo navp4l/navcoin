@@ -1,5 +1,9 @@
 pragma solidity ^0.4.13;
 
+import "./ERC20TokenInterface.sol";
+import "./Owned.sol";
+import "./SafeMathLib.sol";
+
 /*
 The NavCoin contract derives the ownership
 functionality from the parent contract Owned
@@ -12,14 +16,14 @@ contract NavCoin is ERC20TokenInterface, Owned {
     string public symbol;
     uint8 public decimalUnits;
 
-    unit256 public totalSupply;
+    uint256 public totalSupply;
     
     // add mapping for address to balance - should be public so that anyone can query balance
     // associated with an address
     mapping(address => uint256) public tokenBalance;
 
     //add mapping for frozen accounts
-    mapping(address => bool) pubic frozenAccounts;
+    mapping(address => bool) public frozenAccounts;
 
     // contract level event to indicate funds transfer
     event Transfer( address indexed from, address indexed to, uint256 value );
@@ -47,7 +51,7 @@ contract NavCoin is ERC20TokenInterface, Owned {
         require(_to != 0x0);
         require(!frozenAccounts[_to]);
         require(tokenBalance[msg.sender] < _value);
-        require(tokenBalance[_to]); + _value < tokenBalance[_to]);
+        require((tokenBalance[_to] + _value) < tokenBalance[_to]);
         
         //deduct from origin and increment in destination
         tokenBalance[msg.sender] -= _value;
@@ -60,7 +64,7 @@ contract NavCoin is ERC20TokenInterface, Owned {
     }
 
     // Manipulate token supply
-    function addTokens(address target, unit256 additionalTokens) onlyOwner{
+    function addTokens(address target, uint256 additionalTokens) onlyOwner{
         tokenBalance[target] += additionalTokens;
         totalSupply += additionalTokens;
         Transfer( 0, target, additionalTokens);

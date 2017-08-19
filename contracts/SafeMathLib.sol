@@ -27,7 +27,7 @@ library SafeMathLib{
 	* @param _b second input
 	* @return _c difference of two input values
 	*/
-	function subtract (uint256 _a, unit256 _b) internal constant returns (uint256) {
+	function subtract (uint256 _a, uint256 _b) internal constant returns (uint256) {
 		require(_a >= _b);
 		uint256 _c = _a - _b;
 		return _c;
