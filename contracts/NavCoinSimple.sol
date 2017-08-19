@@ -5,10 +5,10 @@ import "./Owned.sol";
 import "./SafeMathLib.sol";
 
 /*
-The NavCoin contract derives the ownership
+The NavCoinSimple contract derives the ownership
 functionality from the parent contract Owned
 */
-contract NavCoin is ERC20TokenInterface, Owned {
+contract NavCoinSimple is ERC20TokenInterface, Owned {
     using SafeMathLib for uint256;
 
     // state variables
@@ -34,7 +34,7 @@ contract NavCoin is ERC20TokenInterface, Owned {
     // constructor method that assigns the following values when contract is initialized
     //initial supply value 
     //token name
-    function NavCoin(string tokenName, string tokenSymbol, uint256 initialSupply, uint8 decimalUnitsForDisplay) {
+    function NavCoinSimple(string tokenName, string tokenSymbol, uint256 initialSupply, uint8 decimalUnitsForDisplay) {
         name = tokenName;
         symbol = tokenSymbol;
         tokenBalance[msg.sender] = initialSupply;
