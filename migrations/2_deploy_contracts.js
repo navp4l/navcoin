@@ -1,8 +1,8 @@
-var ConvertLib = artifacts.require("./ConvertLib.sol");
-var NavCoin = artifacts.require("./NavCoin.sol");
+var SafeMathLib = artifacts.require("./SafeMathLib.sol");
+var NavCoinSimple = artifacts.require("./NavCoinSimple.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(ConvertLib);
-  deployer.link(ConvertLib, NavCoin);
-  deployer.deploy(NavCoin, "NavCoin", "NCN", 100, 2);
+  deployer.deploy(SafeMathLib);
+  deployer.link(SafeMathLib, NavCoinSimple);
+  deployer.deploy(NavCoinSimple, "NavCoinSimple", "NCN", 100, 18);
 };
