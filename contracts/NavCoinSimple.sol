@@ -67,7 +67,7 @@ contract NavCoin is ERC20TokenInterface, Owned {
         Transfer( owner, target, additionalTokens);
     }
 
-    //To be invoken when an account is to be frozen
+    //To be invoked when an account is to be frozen
     function changeStatusOfAcct(address target, bool freeze) onlyOwner {
         frozenAccounts[target] = freeze;
         ChangeAccountStatus(target, freeze);
