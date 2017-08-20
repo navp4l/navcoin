@@ -25,13 +25,16 @@ contract NavCoinSimple is ERC20TokenInterface, Owned {
     //add mapping for frozen accounts
     mapping(address => bool) public frozenAccounts;
 
+    //mapping for transfer authorizations
+    mapping(address => mapping(address => uint256)) public transferAuthorizedAccounts;
+
     // contract level event to indicate funds transfer
     //event Transfer( address indexed from, address indexed to, uint256 value );
 
     //contract level event to indicate an account's state being changed
     event ChangeAccountStatus( address target, bool frozen);
 
-    // constructor method that assigns the following values when contract is initialized
+    // constructor function that assigns the following values when contract is initialized
     //initial supply value 
     //token name
     function NavCoinSimple(string tokenName, string tokenSymbol, uint256 initialSupply, uint8 decimalUnitsForDisplay) {
@@ -42,7 +45,7 @@ contract NavCoinSimple is ERC20TokenInterface, Owned {
     }
 
     /**
-    * @dev Method to retrieve balance of a particular account
+    * @dev function to retrieve balance of a particular account
     * @param _owner address whose balance is to be retrieved 
     * @return _balance returns the balance amount
     */
@@ -51,7 +54,7 @@ contract NavCoinSimple is ERC20TokenInterface, Owned {
         return tokenBalance[_owner];
     }
 
-    // method to transfer tokens out of the contract to a recepient
+    // function to transfer tokens out of the contract to a recepient
     function transfer(address _to, uint256 _value) returns (bool success) {
         //check if the destination is the burn address
         //make sure the account is not a frozen account
@@ -72,6 +75,32 @@ contract NavCoinSimple is ERC20TokenInterface, Owned {
 
         return true;
     }
+
+    /**
+    * @dev Function to approve a _spender to withdraw funds from 
+    * your account multiple times until _allowance is exhausted.
+    * Calling this function multiple times will reset the _allowance
+    * @param _spender
+    * @param _allowance
+    * @return bool
+    */
+    function approve (address _spender, uint _allowance) returns (bool success){
+        transferAuthorizedAccounts[msg.sender][_spender] = _allowance;
+        Approval(msg.sender, _spender, _allowance);
+        return true;
+    }
+
+    /**
+    * @dev Returns the remaining approved allowance for a _spender
+    * as approved by the _owner
+    * @param _owner
+    * @param _spender
+    * @return remaining
+    */
+    function allowance (address _owner, address _spender) constant returns (uint remaining) {
+        return transferAuthorizedAccounts[_owner][_spender];
+    }
+
 
     // Manipulate token supply
     function addTokens(address target, uint256 additionalTokens) onlyOwner{

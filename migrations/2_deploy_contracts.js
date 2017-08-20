@@ -10,3 +10,4 @@ module.exports = function(deployer) {
   deployer.link(SafeMathLib, NavCoinSimple);
   deployer.deploy(NavCoinSimple, "NavCoinSimple", "NCN", 100, 18);
 };
+
