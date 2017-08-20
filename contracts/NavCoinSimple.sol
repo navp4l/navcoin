@@ -26,7 +26,7 @@ contract NavCoinSimple is ERC20TokenInterface, Owned {
     mapping(address => bool) public frozenAccounts;
 
     //mapping for transfer authorizations
-    mapping(address => mapping(address => uint256)) public transferAuthorizedAccounts;
+    mapping(address => mapping(address => uint256)) public authorizedTransferAllowance;
 
     // contract level event to indicate funds transfer
     //event Transfer( address indexed from, address indexed to, uint256 value );
@@ -56,15 +56,11 @@ contract NavCoinSimple is ERC20TokenInterface, Owned {
 
     // function to transfer tokens out of the contract to a recepient
     function transfer(address _to, uint256 _value) returns (bool success) {
-        //check if the destination is the burn address
-        //make sure the account is not a frozen account
-        //check if the contract has requested tokens in the first place
-        //and make sure that there is no integer overflow issue with the recepient
 
-        require(_to != 0x0);
-        require(!frozenAccounts[_to]);
-        require(tokenBalance[msg.sender] < _value);
-        require((tokenBalance[_to] + _value) < tokenBalance[_to]);
+        require(_to != 0x0); //check if the destination is the burn address
+        require(!frozenAccounts[_to]); //make sure the account is not a frozen account
+        require(_value > 0); //non-zero transfer
+        require((tokenBalance[_to] + _value) < tokenBalance[_to]); //and make sure that there is no integer overflow issue with the recepient addrs
         
         //deduct from origin and increment in destination
         tokenBalance[msg.sender] -= _value;
@@ -85,7 +81,7 @@ contract NavCoinSimple is ERC20TokenInterface, Owned {
     * @return bool
     */
     function approve (address _spender, uint _allowance) returns (bool success){
-        transferAuthorizedAccounts[msg.sender][_spender] = _allowance;
+        authorizedTransferAllowance[msg.sender][_spender] = _allowance;
         Approval(msg.sender, _spender, _allowance);
         return true;
     }
@@ -98,9 +94,24 @@ contract NavCoinSimple is ERC20TokenInterface, Owned {
     * @return remaining
     */
     function allowance (address _owner, address _spender) constant returns (uint remaining) {
-        return transferAuthorizedAccounts[_owner][_spender];
+        return authorizedTransferAllowance[_owner][_spender];
     }
 
+    /**
+    * @dev function enables a _spender to transfer value from a _owner account
+    * to another _to account based on pre approval
+    */
+    function transferFrom(address _from, address _to, uint _value) returns (bool success) {
+        
+        require(balanceOf[_from] > _value);
+        require(authorizedTransferAllowance[_to] < _value);
+        require(_to != 0x0); //check if the destination is the burn address
+        require(!frozenAccounts[_to]); //make sure the account is not a frozen account
+        require(_value > 0); //non-zero transfer
+        require((tokenBalance[_to] + _value) < tokenBalance[_to]); //and make sure that there is no integer overflow issue with the recepient addrs
+
+
+    }
 
     // Manipulate token supply
     function addTokens(address target, uint256 additionalTokens) onlyOwner{
