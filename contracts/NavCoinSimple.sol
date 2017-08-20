@@ -16,7 +16,7 @@ contract NavCoinSimple is ERC20TokenInterface, Owned {
     string public symbol;
     uint8 public decimalUnits;
 
-    uint256 public totalSupply;
+    //uint256 public totalSupply;
     
     // add mapping for address to balance - should be public so that anyone can query balance
     // associated with an address
@@ -26,7 +26,7 @@ contract NavCoinSimple is ERC20TokenInterface, Owned {
     mapping(address => bool) public frozenAccounts;
 
     // contract level event to indicate funds transfer
-    event Transfer( address indexed from, address indexed to, uint256 value );
+    //event Transfer( address indexed from, address indexed to, uint256 value );
 
     //contract level event to indicate an account's state being changed
     event ChangeAccountStatus( address target, bool frozen);
@@ -39,6 +39,16 @@ contract NavCoinSimple is ERC20TokenInterface, Owned {
         symbol = tokenSymbol;
         tokenBalance[msg.sender] = initialSupply;
         decimalUnits = decimalUnitsForDisplay;
+    }
+
+    /**
+    * @dev Method to retrieve balance of a particular account
+    * @param _owner address whose balance is to be retrieved 
+    * @return _balance returns the balance amount
+    */
+    function balanceOf(address _owner) constant returns (uint256 _balance) {
+        require(_owner != 0x0);
+        return tokenBalance[_owner];
     }
 
     // method to transfer tokens out of the contract to a recepient
